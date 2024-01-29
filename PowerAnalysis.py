@@ -344,6 +344,9 @@ if __name__ == '__main__':
     CLI.add_argument("--show_plots",
                      type=int,
                      default=1)
+    CLI.add_argument("--optimalgo",
+                    type-str,
+                    default='differential_evolution')
     args = CLI.parse_args()
 
     if args.multiprocess: 
