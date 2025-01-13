@@ -119,7 +119,7 @@ def simulate_responses_DDM(theta = np.array([0,1.6,0.5,1,0.6]), DDM_id = 'angle'
 def Incorrelation_repetition_DDM(means,stds , 
                              param_bounds, 
                              npp = 150,ntrials = 450, 
-                             DDM_id = "ddm", method = "Brute",rep=1, nreps = 250, ncpu = 6):
+                             DDM_id = "ddm", method = "Differential_Evolution",rep=1, nreps = 250, ncpu = 6,show = 0):
     """
 
     Parameters
@@ -217,6 +217,8 @@ def Incorrelation_repetition_DDM(means,stds ,
     param_bounds_Opti = np.array(ssms.config.model_config[DDM_id]['param_bounds'])
     if DDM_id == "ddm":
         param_bounds_Opti[:,1] = param_bounds_Opti[:,1]*2  
+    else: 
+        print('TBC rescaling for other models')
 
 
     for pp in range(npp): # loop for participants
@@ -250,15 +252,13 @@ def Incorrelation_repetition_DDM(means,stds ,
         fun = neg_likelihood
         arg = (responses,DDM_id)
          # method = "Nelder-Mead"  or method=="Brute"
-
+        
         Esti_Par.iloc[pp,:] = MLE(fun,arg,param_bounds_Opti,method,show = 0)     
+        if show:
+            print("Final results:", Esti_Par.iloc[pp,:],neg_likelihood(Esti_Par.iloc[pp,:],arg)) 
+            print("True parameters:", np.array(True_Par.loc[pp]),neg_likelihood(True_Par.loc[pp],arg))
 
-        # print(Esti_Par[pp],neg_likelihood(Esti_Par[pp],arg)) 
-        # print(np.array(True_Par.loc[pp]),neg_likelihood(True_Par.loc[pp],arg))
 
-    # Take average of Accuracy and RT since this is across subjects
-    ACC_average = float(sum(ACC_out))/len(ACC_out)
-    RT_average = float(sum(RT_out))/len(RT_out)
     # re-scaling parameter a
     Esti_Par['a'] = Esti_Par['a']/2
     ####Part 4: correlation between true & estimated learning rates####
@@ -269,10 +269,12 @@ def Incorrelation_repetition_DDM(means,stds ,
     for p in range(len(means)):
         #Statistic[0,p] = np.round(np.corrcoef(True_Par.iloc[:,p], Esti_Par.iloc[:,p])[0,1], 3)
         Statistic[0,p] = np.corrcoef(True_Par.iloc[:,p], Esti_Par.iloc[:,p])[0, 1]
-        print("Sample: {}/{}, Statistic of parameter {}: r = {}".format(rep,nreps,ssms.config.model_config[DDM_id]['params'][p],Statistic[0,p]))
+        print("Sample: {}/{}, Statistic of parameter {}: r = {:.3f}".format(rep+1,nreps,ssms.config.model_config[DDM_id]['params'][p],Statistic[0,p]))
     
-    Statistic_Proficienct = np.append(Statistic,ACC_average)
-    Statistic_Proficienct = np.append(Statistic_Proficienct,RT_average)
+    # Statistic_Proficienct = np.append(Statistic,ACC_average)
+    # Statistic_Proficienct = np.append(Statistic_Proficienct,RT_average)
+    Statistic = np.append(Statistic,ACC_average)
+    Statistic = np.append(Statistic,RT_average)
  
     if rep == 0:
         t1 = time.time() - t0
@@ -280,10 +282,10 @@ def Incorrelation_repetition_DDM(means,stds ,
         estimated_time = np.ceil(estimated_seconds / 60)
         print("\nThe power analysis will take ca. {} minutes".format(estimated_time))
     # return proportion_failed_estimates, Statistic
-    return Statistic, True_Par, Esti_Par, ACC_average, RT_average
+    return Statistic, True_Par, Esti_Par
 
 def Excorrelation_repetition_DDM(means,stds , param_bounds, par_ind,DDM_id,true_correlation, 
-                                 npp, ntrials,rep, nreps, ncpu=6, method = 'Nelder-Mead'):
+                                 npp, ntrials,rep, nreps, ncpu=6, method = "Differential_Evolution"):
     """
 
     Parameters
@@ -449,7 +451,7 @@ def Excorrelation_repetition_DDM(means,stds , param_bounds, par_ind,DDM_id,true_
     Esti_r = Stat[0]
     Esti_pValue = Stat[1]
 
-    print('sample: {}/{}, statistics: r = {:.3f}, p = {:.3f}'.format(rep,nreps,Esti_r,Esti_pValue))
+    print('sample: {}/{}, statistics: r = {:.3f}, p = {:.3f}'.format(rep+1,nreps,Esti_r,Esti_pValue))
 
     if rep == 0:
         t1 = time.time() - t0
@@ -461,7 +463,7 @@ def Excorrelation_repetition_DDM(means,stds , param_bounds, par_ind,DDM_id,true_
     return Esti_r, Esti_pValue, True_r, True_pValue, ACC_average, RT_average
 
 def Groupdifference_repetition_DDM(means_g1, stds_g1,means_g2, stds_g2,DDM_id, par_ind,param_bounds,
-                                   npp_per_group, ntrials, rep, nreps, ncpu, method = 'Nelder-Mead'):
+                                   npp_per_group, ntrials, rep, nreps, ncpu, method = "Differential_Evolution"):
     """
 
     Parameters
@@ -619,7 +621,7 @@ def Groupdifference_repetition_DDM(means_g1, stds_g1,means_g2, stds_g2,DDM_id, p
     # because alternative = less does not exist in scipy version 1.4.0, yet we want a one-sided test
     pValue = pValue/2 
 
-    print('sample: {}/{}, statistics: t = {:.3f}, p = {:.3f}'.format(rep,nreps,Statistic,pValue))
+    print('sample: {}/{}, statistics: t = {:.3f}, p = {:.3f}'.format(rep+1,nreps,Statistic,pValue))
 
     if rep == 0:
         t1 = time.time() - t0

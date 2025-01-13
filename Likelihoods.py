@@ -7,15 +7,15 @@ Created on Wed Jul 19 23:03:42 2023
 
 import math
 from wfpt import wiener_like
-#from wfpt_n.wfpt_n import wiener_like_n
-from wfpt_n import wiener_like_n
+from wfpt_n.wfpt_n import wiener_like_n
+# from wfpt_n import wiener_like_n
 import numpy as np
 
 def neg_likelihood(param,arg):
     """
     neg_likelihood(param,arg):
     ----------
-    theta : 1 * n array， n: number of parameters 
+    theta : 1 * n array, n: number of parameters 
         parameters in an array to generate responses from ssms package.
     arg: tuple
         arg[0]: DDM_id, string, should match those from the SSMS package.
