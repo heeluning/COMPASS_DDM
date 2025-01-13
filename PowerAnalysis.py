@@ -342,6 +342,7 @@ def proportion_within_boundaries(mean, std, lower_bound, upper_bound):
     return prop_within
 
 if __name__ == '__main__':
+    ### test PR
     CLI = argparse.ArgumentParser()
     CLI.add_argument("--input_file",
                         type = none_or_str,
@@ -639,3 +640,4 @@ if __name__ == '__main__':
         # # measure how long the power estimation lasted
         end_time = datetime.now()
         print("\nPower analysis ended at {}; run lasted {} hours.".format(end_time, end_time-start_time))
+# %%
