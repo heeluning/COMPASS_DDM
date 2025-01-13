@@ -17,7 +17,7 @@ import argparse
 import numpy as np
 import pandas as pd
 from multiprocessing import Pool, cpu_count
-from Functions_DDM import Incorrelation_repetition_DDM, Groupdifference _repetition_DDM, Excorrelation_repetition_DDM
+from Functions_DDM import Incorrelation_repetition_DDM, Groupdifference_repetition_DDM, Excorrelation_repetition_DDM
 from scipy import stats as stat
 from datetime import datetime
 import ssms
@@ -345,13 +345,13 @@ if __name__ == '__main__':
     CLI = argparse.ArgumentParser()
     CLI.add_argument("--input_file",
                         type = none_or_str,
-                        default = None)
+                        default = "InputFile_IC_DDM.csv")
     CLI.add_argument("--output_folder",
                         type = none_or_str,
-                        default = None)
+                        default = "CLI_test") 
     CLI.add_argument("--criterion",
                      type = none_or_str,
-                     default = None)
+                     default = "IC")
     CLI.add_argument("--id",
                         type = none_or_int,
                         default = None)
@@ -381,7 +381,7 @@ if __name__ == '__main__':
     # 
     if CLIarg:
         InputFile_path = os.path.join(os.getcwd(), args.input_file)
-        output_folder = args.output_folder
+        output_folder = os.path.join(os.getcwd(), args.output_folder)
         criterion = args.criterion
         show_plots = args.show_plots
 
@@ -401,7 +401,7 @@ if __name__ == '__main__':
     InputDictionary = InputParameters.to_dict()
 
     time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    InputParameters.to_csv(os.path.join(output_folder, 'Input_{}.csv'.format(time)))
+    InputParameters.to_csv(os.path.join(os.getcwd(),output_folder, 'Input_{}.csv'.format(time)))
 
 
     for row in valid_ids:
