@@ -53,7 +53,7 @@ def plot_ParameterRecovery(param_bounds,name,Est,Tru,fig_size = [10,10],xylabels
 # sys.path.append(r"D:\horiz\IMPORTANT\0study_graduate\Pro_COMPASS\COMPASS_DDM\results\test3")
 
 plot_heatmap = 0
-plot_single_setting = 1
+plot_single_setting = 0
 plot_ProPow = 1
 
 ResultPath = "results\\test_Cluster\\v_0.3"

@@ -1,1 +1,5 @@
 slurm/
+Private_Results/
+notebooks/
+ClusterOutput/
+Figures_ReadMe/
